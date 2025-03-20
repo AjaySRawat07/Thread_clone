@@ -86,6 +86,4 @@ Ensure you have the following installed on your system:
 ## Contributing
 Feel free to fork the repository and submit a pull request if you want to contribute.
 
-## License
-This project is open-source and available under the [MIT License](LICENSE).
 
