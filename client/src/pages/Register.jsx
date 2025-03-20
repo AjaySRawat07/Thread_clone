@@ -20,6 +20,7 @@ const Register = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const toggleLogin = () => {
     setLogin((pre) => !pre);
@@ -32,14 +33,27 @@ const Register = () => {
     };
     await loginUser(data);
   };
+  
+  const validateEmail = (email) => {
+    const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    return regex.test(email);
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (!validateEmail(e.target.value)) {
+      setEmailError("Invalid email format");
+    } else {
+      setEmailError("");
+    }
+  };
 
   const handleRegister = async () => {
-    const data = {
-      userName,
-      email,
-      password,
-    };
-    await signinUser(data);
+    if (!validateEmail(email)) {
+      setEmailError("Invalid email format");
+      return;
+    }
+    await signinUser({ userName, email, password });
   };
 
   useEffect(() => {
@@ -140,38 +154,27 @@ const Register = () => {
           >
             {login ? " Login with email" : " Register with email"}
           </Typography>
-          {login ? null : (
-            <TextField
-              variant="outlined"
-              placeholder="Enter your userName..."
-              onChange={(e) => setUserName(e.target.value)}
-            />
-          )}
+          {!login && (
+          <TextField variant="outlined" placeholder="Enter your username..." onChange={(e) => setUserName(e.target.value)} />
+        )}
           <TextField
-            variant="outlined"
-            placeholder="Enter your Email..."
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            placeholder="Enter your Password..."
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            size="large"
-            sx={{
-              width: "100%",
-              height: 52,
-              bgcolor: "green",
-              color: "white",
-              fontSize: "1rem",
-              ":hover": {
-                bgcolor: "blue",
-                cursor: "pointer",
-              },
-            }}
-            onClick={login ? handleLogin : handleRegister}
-          >
+          variant="outlined"
+          placeholder="Enter your email..."
+          onChange={handleEmailChange}
+          error={!!emailError}
+          helperText={emailError}
+        />
+        <TextField
+          type="password"
+          variant="outlined"
+          placeholder="Enter your password..."
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button
+          size="large"
+          sx={{ bgcolor: "green", color: "white", fontSize: "1rem", ":hover": { bgcolor: "blue" } }}
+          onClick={login ? handleLogin : handleRegister}
+        >
             {login ? "Login" : "  Sign Up"}
           </Button>
           <Typography
