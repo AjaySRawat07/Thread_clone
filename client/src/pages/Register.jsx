@@ -10,6 +10,7 @@ import { useLoginMutation, useSigninMutation } from "../redux/service";
 import { Bounce, toast } from "react-toastify";
 import Loading from "../components/common/Loading";
 
+
 const Register = () => {
   const _700 = useMediaQuery("(min-width:700px)");
 
