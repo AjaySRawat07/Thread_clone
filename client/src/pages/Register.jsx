@@ -88,8 +88,30 @@ const Register = () => {
     }
   }, [signinUserData.isSuccess, signinUserData.isError]);
 
+
+  useEffect(() => {
+    const token = localStorage.getItem("userToken"); // Get token
+    if (!token) return; // Don't call API if user is not logged in
+  
+    fetch(  `${import.meta.env.VITE_SERVER_URL}/api/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Send token in headers
+      },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("User Data:", data))
+      .catch((err) => console.error("Error fetching user data:", err));
+  }, []);
+  
   useEffect(() => {
     if (loginUserData.isSuccess) {
+      const token = loginUserData?.data?.token;
+    if (token) {
+      localStorage.setItem("userToken", token);
+    }
       toast.success(loginUserData?.data?.msg, {
         position: "top-center",
         autoClose: 2500,
